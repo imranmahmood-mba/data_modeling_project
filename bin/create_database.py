@@ -101,6 +101,7 @@ def main():
     columns = [col_name for col_name in column_dict.keys()]
     insert_into_table(table_name='students', column_names=columns, values=values, 
                       cursor=cur)   
-    
+    cur.close()
+    conn.close()
 if __name__ == '__main__':
     main()
