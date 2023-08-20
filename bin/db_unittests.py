@@ -15,7 +15,7 @@ class TestDBConnection(unittest.TestCase):
         mock_conn.cursor.return_value = mock_cursor
         mock_connect.return_value = mock_conn
          
-        host, dbname, user, password = '127.0.0.1', 'data_modeling', 'postgres', 'password'
+        host, dbname, user, password = 'localhost', 'test_db', 'user', 'password'
         
         # Act 
         db = cdb.DBConnection()
@@ -36,7 +36,7 @@ class TestTableInsert(unittest.TestCase):
         mock_conn = Mock()
         mock_cursor = Mock()
         mock_connect.return_value.connect.return_value = (mock_conn, mock_cursor)
-        host, dbname, user, password = '127.0.0.1', 'data_modeling', 'postgres', 'password'
+        host, dbname, user, password = 'localhost', 'test_db', 'user', 'password'
         db = cdb.DataBase(host, dbname, user, password, connection_class=mock_connect) # Instantiate the object
         
         columns = ['col1', 'col2', 'col3']
