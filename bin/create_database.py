@@ -15,38 +15,35 @@ logging.config.fileConfig(fname=logging_config_path)
 # Get the custom Logger from Configuration File
 logger = logging.getLogger(__name__)
 
+
+class DBConnection:
+    def connect(self, host: str, dbname: str, user: str, password: str):
+        try:
+            conn = connect(f"host={host} dbname={dbname} user={user} password={password}")
+            conn.set_session(autocommit=True)
+            return conn, conn.cursor()
+        except Exception as e:
+            logging.error(f"Could not connect to database: {e}", exc_info=True) 
+
+
 class DataBase:
-    def __init__(self, host, dbname, user, password):
+    def __init__(self, host: str, dbname: str, user: str, password: str, connection_class=DBConnection):
         self.host = host
-        self.dbname = 'postgres'  # Connect to a default database
         self.user = user
         self.password = password
-        self.conn = None
-        self.cur = None
-        self.connect_to_db()
+        self.connection_class = connection_class
+        self.connect_to_default_db()
         self.create_database(dbname)
-        self.conn.close()  # Close the connection to the default database
-        self.dbname = dbname  # Update to the target database
-        self.connect_to_db()  # Reconnect to the target database
+        self.reconnect_to_db(dbname)
 
-    def connect_to_db(self):
-        try:
-            self.conn = connect(f"host={self.host} dbname={self.dbname} user={self.user} password={self.password}")
-            logging.info("Connected to db successfully.")
-            self.conn.set_session(autocommit=True)
-            self.create_cursor()
-        except Exception as e:
-            logging.error(f"Could not connect to database: {e}", exc_info=True)
-    
-    def create_cursor(self):
-        try:
-            self.cur = self.conn.cursor()
-            logging.info("Cursor created.")
-            return self.cur
-        except Error as e: 
-            logging.error(f"Cursor could not be created: {e}")
+    def connect_to_default_db(self):
+        self.conn, self.cur = self.connection_class().connect(self.host, 'postgres', self.user, self.password)
 
-    def create_database(self, database_name):
+    def reconnect_to_db(self, dbname: str):
+        self.conn.close()
+        self.conn, self.cur = self.connection_class().connect(self.host, dbname, self.user, self.password)
+
+    def create_database(self, database_name: str):
         self.cur.execute(sql.SQL("SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s"), [database_name])
         exists = self.cur.fetchone()
         try:
@@ -73,7 +70,7 @@ class DataBase:
         except Exception as e:
             logging.error(f'There was an issue creating {table_name} table: {e}.')
 
-    def insert_into_table(self, table_name, column_names: list, values: list):
+    def insert_into_table(self, table_name: str, column_names: list, values: list):
         try:
             columns = ', '.join(column_names)
             place_holders = ', '.join(['%s'] * len(values))
