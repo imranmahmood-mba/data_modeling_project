@@ -81,3 +81,28 @@ class DataBase:
             logging.error(f"There was an issue adding the records to {table_name}: {e}")
         except Exception as e:
             logging.error(f"There was an issue adding the records to {table_name}: {e}")
+
+    def set_primary_key(self, table_name: str, column_names: list):
+        try:
+            columns = ', '.join(column_names)
+            query = f"ALTER TABLE {table_name} ADD PRIMARY KEY ({columns})"
+            self.cur.execute(query) # Passing values as the list itself
+            logging.info(f"Successfully added foreign key {columns} to {table_name}.")
+        except Error as e: 
+            logging.error(f"There was an issue creating the primary key {table_name}: {e}")
+        except Exception as e:
+            logging.error(f"There was an issue creating the primary key {table_name}: {e}")
+
+    def set_foreign_key(self, table_name: str, foreign_key_table_name: str, reference_columns_names: list, column_names: list):
+        try:
+            columns = ', '.join(column_names)
+            reference_columns = ', '.join(reference_columns_names)
+            query = f"ALTER TABLE {table_name} ADD FOREIGN KEY ({columns}) REFERENCES {foreign_key_table_name}({reference_columns})"
+            self.cur.execute(query) # Passing values as the list itself
+            logging.info(f"Successfully added foreign key {columns} to {table_name}.")
+        except Error as e: 
+            logging.error(f"There was an issue creating the primary key {table_name}: {e}")
+        except Exception as e:
+            logging.error(f"There was an issue creating the primary key {table_name}: {e}")   
+    
+
