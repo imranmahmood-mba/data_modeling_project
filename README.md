@@ -19,14 +19,14 @@ The database was created locally using a docker container for a PostgreSQL insta
 
 Clone the repository:
 
-\```bash
+\```
 git clone https://github.com/imranmahmood-mba/data_modeling_project.git
 cd netflix-database
 \```
 
 Install the required packages:
 
-\```bash
+\```
 pip install pandas numpy
 \```
 
@@ -43,7 +43,7 @@ password = 'password'
 
 Run the `main.py` script:
 
-\```bash
+\```
 python main.py
 \```
 
