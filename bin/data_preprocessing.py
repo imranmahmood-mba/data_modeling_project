@@ -69,13 +69,6 @@ def create_content_dimension(df: pd.DataFrame):
     # Create a new column for content_id
     df['content_id'] = range(1, len(df) + 1)
 
-import pandas as pd
-
-import numpy as np
-
-import pandas as pd
-import numpy as np
-
 def split_and_assign_id(df: pd.DataFrame, names_col: str, id_col_name='id', movie_col=None):
     # Splitting the names column into multiple rows
     s = df[names_col].str.split(', ').apply(pd.Series, 1).stack()
