@@ -2,6 +2,7 @@ import os
 import logging
 import logging.config
 import pandas as pd
+import numpy as np
 
 # Get the absolute directory of the current script
 abs_dir = os.path.dirname(os.path.abspath(__file__))
